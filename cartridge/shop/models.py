@@ -92,7 +92,7 @@ class Product(Displayable, Priced, RichText, AdminThumbMixin):
     Container model for a product that stores information common to
     all of its variations such as the product's title and description.
     """
-    seller = models.Foreignkey(User)
+    seller_id = models.IntegerField(blank=True, null=True)
     available = models.BooleanField(_("Available for purchase"),
                                     default=False)
     image = CharField(_("Image"), max_length=100, blank=True, null=True)
@@ -113,6 +113,15 @@ class Product(Displayable, Priced, RichText, AdminThumbMixin):
     class Meta:
         verbose_name = _("Product")
         verbose_name_plural = _("Products")
+    
+    def setup(self, request):
+        """
+        Set order fields that are stored in the session, item_total
+        and total based on the given cart, and copy the cart items
+        to the order. Called in the final step of the checkout process
+        prior to the payment handler being called.
+        """
+        self.seller_id = request.user.id   
 
     def save(self, *args, **kwargs):
         """
