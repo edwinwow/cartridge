@@ -1,7 +1,7 @@
-
 from decimal import Decimal
 from operator import iand, ior
 
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.signals import m2m_changed
@@ -92,7 +92,7 @@ class Product(Displayable, Priced, RichText, AdminThumbMixin):
     Container model for a product that stores information common to
     all of its variations such as the product's title and description.
     """
-
+    seller = models.Foreignkey(User)
     available = models.BooleanField(_("Available for purchase"),
                                     default=False)
     image = CharField(_("Image"), max_length=100, blank=True, null=True)
