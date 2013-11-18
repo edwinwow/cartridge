@@ -30,6 +30,20 @@ except ImportError:
         _mysql_exceptions.OperationalError is not available.
         """
 
+_recurrence_unit_days = {
+    'D': 1.,
+    'W': 7.,
+    'M': 30.4368, # http://en.wikipedia.org/wiki/Month#Julian_and_Gregorian_calendars
+    'Y': 365.2425, # http://en.wikipedia.org/wiki/Year#Calendar_year
+    }
+
+_TIME_UNIT_CHOICES = (
+    ('0', ugettext_lazy('No trial')),
+    ('D', ugettext_lazy('Day')),
+    ('W', ugettext_lazy('Week')),
+    ('M', ugettext_lazy('Month')),
+    ('Y', ugettext_lazy('Year')),
+    )
 
 class Priced(models.Model):
     """
@@ -45,6 +59,10 @@ class Priced(models.Model):
     sku = fields.SKUField(unique=True, blank=True, null=True)
     num_in_stock = models.IntegerField(_("Number in stock"), blank=True,
                                        null=True)
+    recurrence_period = models.PositiveIntegerField(null=True, blank=True)
+    recurrence_unit = models.CharField(max_length=1, null=True,
+                                       choices=((None, ugettext_lazy("No recurrence")),)
+                                       + _TIME_UNIT_CHOICES)
 
     class Meta:
         abstract = True
